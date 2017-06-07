@@ -1139,7 +1139,7 @@ def install_extra_trees(args, workspace):
 def git_files_ignore():
     "Creates a function to be used as a ignore callable argument for copytree"
     c = subprocess.run(['git', 'ls-files', '-z', '--others', '--cached',
-                        '--exclude-standard', '--exclude', '/.mkosi-*'],
+                        '--exclude-standard'],
                        stdout=subprocess.PIPE,
                        universal_newlines=False,
                        check=True)
@@ -1149,7 +1149,8 @@ def git_files_ignore():
     def ignore(src, names):
         return [name for name in names
                 if (os.path.relpath(os.path.join(src, name)) not in files
-                    and not os.path.isdir(os.path.join(src, name)))]
+                    and not os.path.isdir(os.path.join(src, name)))
+                   or name.startswith('.mkosi-')]
     return ignore
 
 def install_build_src(args, workspace, run_build_script):
